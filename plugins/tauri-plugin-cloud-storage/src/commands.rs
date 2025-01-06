@@ -1,8 +1,8 @@
-use tauri::{AppHandle, command, Runtime};
+use tauri::{command, AppHandle, Runtime};
 
 use crate::models::*;
-use crate::Result;
 use crate::CloudStorageExt;
+use crate::Result;
 
 #[command]
 pub(crate) async fn ping<R: Runtime>(
@@ -10,4 +10,9 @@ pub(crate) async fn ping<R: Runtime>(
     payload: PingRequest,
 ) -> Result<PingResponse> {
     app.cloud_storage().ping(payload)
+}
+
+#[command]
+pub(crate) async fn status<R: Runtime>(app: AppHandle<R>) -> Result<Status> {
+    app.cloud_storage().status()
 }
