@@ -21,7 +21,7 @@ class ExamplePlugin(private val activity: Activity): Plugin(activity) {
     private static final String SCOPE = DriveScopes.DRIVE_METADATA_READONLY;
 
     @Command
-    fun checkPermissions() {
+    fun checkPermissions(invoke: Invoke) {
       // TODO ...
     }
 

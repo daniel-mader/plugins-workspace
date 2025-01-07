@@ -17,6 +17,32 @@ Default permissions for the plugin
 <tr>
 <td>
 
+`cloud-storage:allow-check-permissions`
+
+</td>
+<td>
+
+Enables the check_permissions command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`cloud-storage:deny-check-permissions`
+
+</td>
+<td>
+
+Denies the check_permissions command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
 `cloud-storage:allow-ping`
 
 </td>
@@ -62,6 +88,32 @@ Enables the status command without any pre-configured scope.
 <td>
 
 Denies the status command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`cloud-storage:allow-write`
+
+</td>
+<td>
+
+Enables the write command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`cloud-storage:deny-write`
+
+</td>
+<td>
+
+Denies the write command without any pre-configured scope.
 
 </td>
 </tr>

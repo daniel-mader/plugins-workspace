@@ -30,3 +30,11 @@ export async function checkPermissions(): Promise<PermissionState> {
     'cloud-storage'
   ).then((r) => r.cloudStorage)
 }
+
+/**
+ * Write bytes.
+ * @param options
+ */
+export async function write(value: string): Promise<string> {
+  return await invoke('plugin:cloud-storage|write', { payload: { value } })
+}

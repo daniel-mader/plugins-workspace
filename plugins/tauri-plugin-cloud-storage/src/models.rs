@@ -20,3 +20,9 @@ pub struct Status {
     pub error: Option<String>,
     // pub error_code: Option<String>,
 }
+
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct WriteData {
+    pub value: String,
+}
