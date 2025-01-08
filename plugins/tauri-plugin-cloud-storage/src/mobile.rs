@@ -53,4 +53,8 @@ impl<R: Runtime> CloudStorage<R> {
     pub fn exists(&self) -> crate::Result<FileAttributes> {
         self.0.run_mobile_plugin("exists", ()).map_err(Into::into)
     }
+
+    pub fn delete(&self) -> crate::Result<String> {
+        self.0.run_mobile_plugin("delete", ()).map_err(Into::into)
+    }
 }

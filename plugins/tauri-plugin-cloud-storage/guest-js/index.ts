@@ -11,6 +11,7 @@ export interface Status {
 }
 
 export interface FileAttributes {
+  provider: string
   size: number
   modificationDate: string
 }
@@ -44,6 +45,16 @@ export async function writeBytes(value: string): Promise<string> {
   return await invoke('plugin:cloud-storage|write', { value })
 }
 
+/**
+ * Checks if a backup file exists and returns its "last modified" date and its size.
+ */
 export async function exists(): Promise<FileAttributes> {
   return await invoke('plugin:cloud-storage|exists')
+}
+
+/**
+ * Deletes the backup file.
+ */
+export async function deleteBackup(): Promise<void> {
+  return await invoke('plugin:cloud-storage|delete')
 }

@@ -30,6 +30,7 @@ pub struct WriteData {
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct FileAttributes {
+    pub provider: String, // TODO: should providers be typed more strictly?
     pub size: u64,
     pub modification_date: String,
 }

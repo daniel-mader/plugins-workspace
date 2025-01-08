@@ -1,7 +1,7 @@
 [package]
 name = "tauri-plugin-cloud-storage"
 version = "0.1.0"
-authors = [ "You" ]
+authors = ["daniel-mader"]
 description = ""
 edition = "2021"
 rust-version = "1.77.2"
@@ -9,6 +9,7 @@ exclude = ["/examples", "/webview-dist", "/webview-src", "/node_modules"]
 links = "tauri-plugin-cloud-storage"
 
 [dependencies]
+chrono = { version = "0.4" }
 tauri = { version = "2.1.0" }
 serde = "1.0"
 thiserror = "2"

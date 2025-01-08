@@ -20,11 +20,15 @@ pub(crate) async fn check_permissions<R: Runtime>(app: AppHandle<R>) -> Result<S
 
 #[command]
 pub(crate) async fn write<R: Runtime>(app: AppHandle<R>, value: String) -> Result<String> {
-    // let write_data = WriteData::from(value);
     app.cloud_storage().write(WriteData { value })
 }
 
 #[command]
 pub(crate) async fn exists<R: Runtime>(app: AppHandle<R>) -> Result<FileAttributes> {
     app.cloud_storage().exists()
+}
+
+#[command]
+pub(crate) async fn delete<R: Runtime>(app: AppHandle<R>) -> Result<String> {
+    app.cloud_storage().delete()
 }

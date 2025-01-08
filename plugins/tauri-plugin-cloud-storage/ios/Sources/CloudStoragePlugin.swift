@@ -112,9 +112,30 @@ class CloudStoragePlugin: Plugin {
         let modDate = attributes[.modificationDate] as? Date
         
         // Alternatively: .creationDate, .posixPermissions, etc. if needed
-        invoke.resolve(["size": size, "modificationDate": modDate])
+        invoke.resolve(["provider": "iCloud" ,"size": size, "modificationDate": modDate])
     } catch {
       throw NSError(domain: "iCloud", code: 0, userInfo: [NSLocalizedDescriptionKey: "Error reading file attributes: \(error.localizedDescription)"])
+    }
+  }
+
+  @objc public func delete(_ invoke: Invoke) throws {
+    guard let iCloudDocumentsURL = iCloudDocumentsDirectory() else {
+        throw NSError(domain: "iCloud", code: 0, userInfo: [NSLocalizedDescriptionKey: "iCloud not available"])
+    }
+
+    let fileURL = iCloudDocumentsURL.appendingPathComponent("test.txt")
+
+    let fileManager = FileManager.default
+
+    guard fileManager.fileExists(atPath: fileURL.path) else {
+        throw NSError(domain: "iCloud", code: 0, userInfo: [NSLocalizedDescriptionKey: "File not on device yet (not downloaded)"])
+    }
+
+    do {
+        try fileManager.removeItem(at: fileURL)
+        invoke.resolve("success")
+    } catch {
+        throw NSError(domain: "iCloud", code: 0, userInfo: [NSLocalizedDescriptionKey: "Error deleting file: \(error.localizedDescription)"])
     }
   }
 }

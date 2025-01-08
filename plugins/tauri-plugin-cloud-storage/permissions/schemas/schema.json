@@ -305,6 +305,16 @@
           "const": "deny-check-permissions"
         },
         {
+          "description": "Enables the delete command without any pre-configured scope.",
+          "type": "string",
+          "const": "allow-delete"
+        },
+        {
+          "description": "Denies the delete command without any pre-configured scope.",
+          "type": "string",
+          "const": "deny-delete"
+        },
+        {
           "description": "Enables the exists command without any pre-configured scope.",
           "type": "string",
           "const": "allow-exists"

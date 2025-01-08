@@ -1,3 +1,5 @@
+use std::io::Write;
+
 use serde::de::DeserializeOwned;
 use tauri::{
     fs,
@@ -16,6 +18,8 @@ pub fn init<R: Runtime, C: DeserializeOwned>(
 
 /// Access to the cloud-storage APIs.
 pub struct CloudStorage<R: Runtime>(AppHandle<R>);
+
+const FILE_PATH: &str = "/Users/daniel/Library/Application Support/com.impierce.unime/backup.txt";
 
 impl<R: Runtime> CloudStorage<R> {
     pub fn ping(&self, payload: PingRequest) -> crate::Result<PingResponse> {
@@ -42,17 +46,26 @@ impl<R: Runtime> CloudStorage<R> {
 
     pub fn write(&self, payload: WriteData) -> crate::Result<String> {
         println!("writing data: {:?}", payload);
-        Ok("nop".to_string())
-        // self.0
-        //     .run_mobile_plugin("write", payload)
-        //     .map_err(Into::into)
+        let mut file = std::fs::File::create(FILE_PATH).unwrap();
+        file.write_all(payload.value.as_bytes()).unwrap();
+        Ok("done".to_string())
     }
 
     pub fn exists(&self) -> crate::Result<FileAttributes> {
+        let metadata = std::fs::metadata(FILE_PATH).unwrap();
+
+        let modified: chrono::DateTime<chrono::Utc> = metadata.modified().unwrap().into();
+
         Ok(FileAttributes {
-            size: 0,
-            modification_date: "none".to_string(),
+            provider: "Local filesystem".to_string(),
+            size: metadata.len(),
+            modification_date: modified.to_rfc3339(),
         })
+    }
+
+    pub fn delete(&self) -> crate::Result<String> {
+        std::fs::remove_file(FILE_PATH).unwrap();
+        Ok("success".to_string())
     }
 
     // TODO: check iCloud access locally

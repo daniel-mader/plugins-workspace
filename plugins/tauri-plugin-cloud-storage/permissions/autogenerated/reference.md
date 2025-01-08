@@ -44,6 +44,32 @@ Denies the check_permissions command without any pre-configured scope.
 <tr>
 <td>
 
+`cloud-storage:allow-delete`
+
+</td>
+<td>
+
+Enables the delete command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`cloud-storage:deny-delete`
+
+</td>
+<td>
+
+Denies the delete command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
 `cloud-storage:allow-exists`
 
 </td>
