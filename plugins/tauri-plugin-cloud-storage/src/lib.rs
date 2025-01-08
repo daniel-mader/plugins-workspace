@@ -1,4 +1,4 @@
-#![cfg(mobile)]
+// #![cfg(mobile)]
 
 use tauri::{
     plugin::{Builder, PluginHandle, TauriPlugin},
@@ -7,21 +7,21 @@ use tauri::{
 
 pub use models::*;
 
-// #[cfg(desktop)]
-// mod desktop;
-// #[cfg(mobile)]
-// mod mobile;
+#[cfg(desktop)]
+mod desktop;
+#[cfg(mobile)]
+mod mobile;
 
-// mod commands;
+mod commands;
 mod error;
 mod models;
 
 pub use error::{Error, Result};
 
-// #[cfg(desktop)]
-// use desktop::CloudStorage;
-// #[cfg(mobile)]
-// use mobile::CloudStorage;
+#[cfg(desktop)]
+use desktop::CloudStorage;
+#[cfg(mobile)]
+use mobile::CloudStorage;
 
 #[cfg(target_os = "android")]
 const PLUGIN_IDENTIFIER: &str = "app.tauri.cloudstorage";
@@ -29,9 +29,9 @@ const PLUGIN_IDENTIFIER: &str = "app.tauri.cloudstorage";
 #[cfg(target_os = "ios")]
 tauri::ios_plugin_binding!(init_plugin_cloud_storage);
 
-pub struct CloudStorage<R: Runtime>(PluginHandle<R>);
+// pub struct CloudStorage<R: Runtime>(PluginHandle<R>);
 
-impl<R: Runtime> CloudStorage<R> {}
+// impl<R: Runtime> CloudStorage<R> {}
 
 /// Extensions to [`tauri::App`], [`tauri::AppHandle`] and [`tauri::Window`] to access the cloud-storage APIs.
 pub trait CloudStorageExt<R: Runtime> {
@@ -47,18 +47,23 @@ impl<R: Runtime, T: Manager<R>> crate::CloudStorageExt<R> for T {
 /// Initializes the plugin.
 pub fn init<R: Runtime>() -> TauriPlugin<R> {
     Builder::new("cloud-storage")
-        // .invoke_handler(tauri::generate_handler![commands::ping, commands::status])
+        .invoke_handler(tauri::generate_handler![
+            commands::check_permissions,
+            commands::ping,
+            commands::write,
+            commands::exists
+        ])
         .setup(|app, api| {
-            // #[cfg(mobile)]
-            // let cloud_storage = mobile::init(app, api)?;
-            // #[cfg(desktop)]
-            // let cloud_storage = desktop::init(app, api)?;
-            // app.manage(cloud_storage);
-            #[cfg(target_os = "android")]
-            let handle = api.register_android_plugin(PLUGIN_IDENTIFIER, "CloudStoragePlugin")?;
-            #[cfg(target_os = "ios")]
-            let handle = api.register_ios_plugin(init_plugin_cloud_storage)?;
-            app.manage(CloudStorage(handle));
+            #[cfg(mobile)]
+            let cloud_storage = mobile::init(app, api)?;
+            #[cfg(desktop)]
+            let cloud_storage = desktop::init(app, api)?;
+            app.manage(cloud_storage);
+            // #[cfg(target_os = "android")]
+            // let handle = api.register_android_plugin(PLUGIN_IDENTIFIER, "CloudStoragePlugin")?;
+            // #[cfg(target_os = "ios")]
+            // let handle = api.register_ios_plugin(init_plugin_cloud_storage)?;
+            // app.manage(CloudStorage(handle));
             Ok(())
         })
         .build()

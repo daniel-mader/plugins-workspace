@@ -1,5 +1,9 @@
 use serde::de::DeserializeOwned;
-use tauri::{fs, plugin::PluginApi, AppHandle, Manager, Runtime};
+use tauri::{
+    fs,
+    plugin::{PermissionState, PluginApi},
+    AppHandle, Manager, Runtime,
+};
 
 use crate::models::*;
 
@@ -30,4 +34,29 @@ impl<R: Runtime> CloudStorage<R> {
         //     "Not implemented",
         // )))
     }
+
+    pub fn check_permissions(&self) -> crate::Result<String> {
+        // Ok(PermissionState::Denied)
+        Ok("disabled".to_string())
+    }
+
+    pub fn write(&self, payload: WriteData) -> crate::Result<String> {
+        println!("writing data: {:?}", payload);
+        Ok("nop".to_string())
+        // self.0
+        //     .run_mobile_plugin("write", payload)
+        //     .map_err(Into::into)
+    }
+
+    pub fn exists(&self) -> crate::Result<FileAttributes> {
+        Ok(FileAttributes {
+            size: 0,
+            modification_date: "none".to_string(),
+        })
+    }
+
+    // TODO: check iCloud access locally
+    // pub fn check_permissions(&self) -> crate::Result<PermissionStatus> {
+    //     Ok(PermissionStatus::default())
+    // }
 }

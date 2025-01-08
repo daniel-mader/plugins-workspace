@@ -6,6 +6,9 @@ use tauri::{
 
 use crate::models::*;
 
+#[cfg(target_os = "android")]
+const PLUGIN_IDENTIFIER: &str = "app.tauri.barcodescanner";
+
 #[cfg(target_os = "ios")]
 tauri::ios_plugin_binding!(init_plugin_cloud_storage);
 
@@ -15,7 +18,7 @@ pub fn init<R: Runtime, C: DeserializeOwned>(
     api: PluginApi<R, C>,
 ) -> crate::Result<CloudStorage<R>> {
     #[cfg(target_os = "android")]
-    let handle = api.register_android_plugin("", "ExamplePlugin")?;
+    let handle = api.register_android_plugin(PLUGIN_IDENTIFIER, "CloudStoragePlugin")?;
     #[cfg(target_os = "ios")]
     let handle = api.register_ios_plugin(init_plugin_cloud_storage)?;
     Ok(CloudStorage(handle))
@@ -33,5 +36,21 @@ impl<R: Runtime> CloudStorage<R> {
 
     pub fn status(&self) -> crate::Result<Status> {
         self.0.run_mobile_plugin("status", ()).map_err(Into::into)
+    }
+
+    pub fn check_permissions(&self) -> crate::Result<String> {
+        self.0
+            .run_mobile_plugin("checkPermissions", ())
+            .map_err(Into::into)
+    }
+
+    pub fn write(&self, payload: WriteData) -> crate::Result<String> {
+        self.0
+            .run_mobile_plugin("write", payload)
+            .map_err(Into::into)
+    }
+
+    pub fn exists(&self) -> crate::Result<FileAttributes> {
+        self.0.run_mobile_plugin("exists", ()).map_err(Into::into)
     }
 }

@@ -4,6 +4,7 @@ Default permissions for the plugin
 
 - `allow-ping`
 - `allow-status`
+- `allow-exists`
 
 ## Permission Table
 
@@ -36,6 +37,32 @@ Enables the check_permissions command without any pre-configured scope.
 <td>
 
 Denies the check_permissions command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`cloud-storage:allow-exists`
+
+</td>
+<td>
+
+Enables the exists command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`cloud-storage:deny-exists`
+
+</td>
+<td>
+
+Denies the exists command without any pre-configured scope.
 
 </td>
 </tr>

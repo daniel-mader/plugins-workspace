@@ -26,3 +26,10 @@ pub struct Status {
 pub struct WriteData {
     pub value: String,
 }
+
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FileAttributes {
+    pub size: u64,
+    pub modification_date: String,
+}

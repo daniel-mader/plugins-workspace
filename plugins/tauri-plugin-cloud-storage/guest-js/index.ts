@@ -10,6 +10,11 @@ export interface Status {
   error?: string
 }
 
+export interface FileAttributes {
+  size: number
+  modificationDate: string
+}
+
 export async function ping(value: string): Promise<string | null> {
   return await invoke<{ value?: string }>('plugin:cloud-storage|ping', {
     payload: {
@@ -35,6 +40,10 @@ export async function checkPermissions(): Promise<PermissionState> {
  * Write bytes.
  * @param options
  */
-export async function write(value: string): Promise<string> {
-  return await invoke('plugin:cloud-storage|write', { payload: { value } })
+export async function writeBytes(value: string): Promise<string> {
+  return await invoke('plugin:cloud-storage|write', { value })
+}
+
+export async function exists(): Promise<FileAttributes> {
+  return await invoke('plugin:cloud-storage|exists')
 }

@@ -42,7 +42,8 @@ class CloudStoragePlugin: Plugin {
 
   @objc override func checkPermissions(_ invoke: Invoke) {
     let permissionState = getPermissionState()
-    invoke.resolve(["cloudStorage": permissionState])
+    // invoke.resolve(["cloudStorage": permissionState])
+    invoke.resolve(permissionState)
   }
 
   private func iCloudDocumentsDirectory() -> URL? {
@@ -60,8 +61,8 @@ class CloudStoragePlugin: Plugin {
 
   @objc public func write(_ invoke: Invoke) throws {
     let args = try invoke.parseArgs(WriteArgs.self)
-    let result = args.value + "-cloud"
-    invoke.resolve(["value": result])
+    // let result = args.value + "-cloud"
+    // invoke.resolve(["value": result])
       
     // 1. Get iCloud Documents directory URL
     guard let iCloudDocumentsURL = iCloudDocumentsDirectory() else {
@@ -69,7 +70,7 @@ class CloudStoragePlugin: Plugin {
     }
 
     // 2. Create the destination file URL
-    let fileURL = iCloudDocumentsURL.appendingPathComponent("test.dat")
+    let fileURL = iCloudDocumentsURL.appendingPathComponent("test.txt")
 
     // 3. Ensure the directory exists (Documents folder should already exist, but you can create subfolders if needed)
     let fileManager = FileManager.default
@@ -83,6 +84,38 @@ class CloudStoragePlugin: Plugin {
     // 4. Write data to file
     //    Using `.atomic` helps ensure partial writes won't corrupt the file.
     try data.write(to: fileURL, options: .atomic)
+    let value = String(data: data, encoding: .utf8)
+    invoke.resolve(fileURL.absoluteString)
+  }
+
+  @objc public func exists(_ invoke: Invoke) throws {
+    guard let iCloudDocumentsURL = iCloudDocumentsDirectory() else {
+        throw NSError(domain: "iCloud", code: 0, userInfo: [NSLocalizedDescriptionKey: "iCloud not available"])
+    }
+
+    let fileURL = iCloudDocumentsURL.appendingPathComponent("test.txt")
+
+    let fileManager = FileManager.default
+
+    // This only returns true if the file is physically on disk right now
+    // let existsLocally = fileManager.fileExists(atPath: fileURL.path)
+
+    guard fileManager.fileExists(atPath: fileURL.path) else {
+        throw NSError(domain: "iCloud", code: 0, userInfo: [NSLocalizedDescriptionKey: "File not on device yet (not downloaded)"])
+    }
+
+    do {
+        // 4. Grab attributes from the local file
+        let attributes = try fileManager.attributesOfItem(atPath: fileURL.path)
+        
+        let size = attributes[.size] as? Int
+        let modDate = attributes[.modificationDate] as? Date
+        
+        // Alternatively: .creationDate, .posixPermissions, etc. if needed
+        invoke.resolve(["size": size, "modificationDate": modDate])
+    } catch {
+      throw NSError(domain: "iCloud", code: 0, userInfo: [NSLocalizedDescriptionKey: "Error reading file attributes: \(error.localizedDescription)"])
+    }
   }
 }
 
