@@ -1,4 +1,4 @@
-package com.plugin.cloudstorage
+package app.tauri.cloud_storage
 
 import org.junit.Test
 

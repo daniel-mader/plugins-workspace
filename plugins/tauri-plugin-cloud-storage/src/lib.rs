@@ -23,12 +23,6 @@ use desktop::CloudStorage;
 #[cfg(mobile)]
 use mobile::CloudStorage;
 
-#[cfg(target_os = "android")]
-const PLUGIN_IDENTIFIER: &str = "app.tauri.cloudstorage";
-
-#[cfg(target_os = "ios")]
-tauri::ios_plugin_binding!(init_plugin_cloud_storage);
-
 // pub struct CloudStorage<R: Runtime>(PluginHandle<R>);
 
 // impl<R: Runtime> CloudStorage<R> {}
