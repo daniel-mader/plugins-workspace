@@ -3,6 +3,9 @@ package app.tauri.cloud_storage
 import android.app.Activity
 import android.content.Intent
 import android.provider.DocumentsContract
+import androidx.activity.result.ActivityResult
+import app.tauri.Logger
+import app.tauri.annotation.ActivityCallback
 import app.tauri.annotation.Command
 import app.tauri.annotation.InvokeArg
 import app.tauri.annotation.TauriPlugin
@@ -18,12 +21,12 @@ class PingArgs {
 
 @TauriPlugin
 class CloudStoragePlugin(private val activity: Activity): Plugin(activity) {
-    private val implementation = Example()
+    // private val implementation = Example()
 
     companion object {
         // const val SCOPE = DriveScopes.DRIVE_METADATA_READONLY
-        const val CREATE_FILE = 1
-        const val REQUEST_CREATE_FILE = "REQUEST_CREATE_FILE"
+        // const val CREATE_FILE = 1
+        const val ACTION_OPEN_DOCUMENT_TREE = "ACTION_OPEN_DOCUMENT_TREE"
     }
 
     @Command
@@ -51,9 +54,26 @@ class CloudStoragePlugin(private val activity: Activity): Plugin(activity) {
         */
 
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
-            putExtra(DocumentsContract.EXTRA_INITIAL_URI, "")
+            putExtra(DocumentsContract.EXTRA_INITIAL_URI, "Documents/UniMe Backups")
         }
-        startActivityForResult(invoke, intent, "1337")
+        startActivityForResult(invoke, intent, "openDocumentTreeResult")
+    }
+
+    @ActivityCallback
+    private fun openDocumentTreeResult(invoke: Invoke, result: ActivityResult) {
+        if (result.resultCode == Activity.RESULT_CANCELED) {
+            invoke.reject(
+                "The system canceled action_open_document_tree",
+                "systemCancel"
+            )
+            return
+        }
+
+        Logger.warn(result.data.toString())
+
+        val res = JSObject()
+        res.put("value", "foo_openDocumentTreeResult")
+        invoke.resolve(res)
     }
 
     @Command
@@ -61,7 +81,23 @@ class CloudStoragePlugin(private val activity: Activity): Plugin(activity) {
         val args = invoke.parseArgs(PingArgs::class.java)
 
         val ret = JSObject()
-        ret.put("value", implementation.pong(args.value ?: "default value :("))
+        ret.put("value", "pong from android")
+        invoke.resolve(ret)
+    }
+
+    @Command
+    fun write(invoke: Invoke) {
+        val ret = JSObject()
+        ret.put("value", "android_write")
+        invoke.resolve(ret)
+    }
+
+    @Command
+    fun exists(invoke: Invoke) {
+        val ret = JSObject()
+        ret.put("provider", "Google Drive")
+        ret.put("size", 0)
+        ret.put("modificationDate", "1970-01-01T00:00:00Z")
         invoke.resolve(ret)
     }
 }

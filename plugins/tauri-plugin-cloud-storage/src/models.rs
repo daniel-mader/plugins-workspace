@@ -34,3 +34,9 @@ pub struct FileAttributes {
     pub size: u64,
     pub modification_date: String,
 }
+
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct WriteResponse {
+    pub value: String,
+}

@@ -44,11 +44,13 @@ impl<R: Runtime> CloudStorage<R> {
         Ok("disabled".to_string())
     }
 
-    pub fn write(&self, payload: WriteData) -> crate::Result<String> {
+    pub fn write(&self, payload: WriteData) -> crate::Result<WriteResponse> {
         println!("writing data: {:?}", payload);
         let mut file = std::fs::File::create(FILE_PATH).unwrap();
         file.write_all(payload.value.as_bytes()).unwrap();
-        Ok("done".to_string())
+        Ok(WriteResponse {
+            value: "done".to_string(),
+        })
     }
 
     pub fn exists(&self) -> crate::Result<FileAttributes> {

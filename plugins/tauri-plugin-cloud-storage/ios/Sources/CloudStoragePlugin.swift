@@ -85,7 +85,7 @@ class CloudStoragePlugin: Plugin {
     //    Using `.atomic` helps ensure partial writes won't corrupt the file.
     try data.write(to: fileURL, options: .atomic)
     let value = String(data: data, encoding: .utf8)
-    invoke.resolve(fileURL.absoluteString)
+    invoke.resolve(["value": fileURL.absoluteString])
   }
 
   @objc public func exists(_ invoke: Invoke) throws {

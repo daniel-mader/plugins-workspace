@@ -44,7 +44,7 @@ impl<R: Runtime> CloudStorage<R> {
             .map_err(Into::into)
     }
 
-    pub fn write(&self, payload: WriteData) -> crate::Result<String> {
+    pub fn write(&self, payload: WriteData) -> crate::Result<WriteResponse> {
         self.0
             .run_mobile_plugin("write", payload)
             .map_err(Into::into)

@@ -19,7 +19,7 @@ pub(crate) async fn check_permissions<R: Runtime>(app: AppHandle<R>) -> Result<S
 }
 
 #[command]
-pub(crate) async fn write<R: Runtime>(app: AppHandle<R>, value: String) -> Result<String> {
+pub(crate) async fn write<R: Runtime>(app: AppHandle<R>, value: String) -> Result<WriteResponse> {
     app.cloud_storage().write(WriteData { value })
 }
 
