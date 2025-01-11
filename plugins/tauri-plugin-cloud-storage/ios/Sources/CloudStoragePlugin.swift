@@ -43,7 +43,7 @@ class CloudStoragePlugin: Plugin {
   @objc override func checkPermissions(_ invoke: Invoke) {
     let permissionState = getPermissionState()
     // invoke.resolve(["cloudStorage": permissionState])
-    invoke.resolve(permissionState)
+    invoke.resolve(["value": permissionState])
   }
 
   private func iCloudDocumentsDirectory() -> URL? {
@@ -57,7 +57,7 @@ class CloudStoragePlugin: Plugin {
     // Typically store files in the "Documents" subfolder of your ubiquity container
     let documentsURL = ubiquityURL.appendingPathComponent("Documents")
     return documentsURL
-}
+  }
 
   @objc public func write(_ invoke: Invoke) throws {
     let args = try invoke.parseArgs(WriteArgs.self)

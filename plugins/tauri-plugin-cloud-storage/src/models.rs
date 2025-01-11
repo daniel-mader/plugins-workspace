@@ -23,8 +23,17 @@ pub struct Status {
 
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct WriteData {
+pub struct WriteArgs {
+    #[cfg(not(target_os = "ios"))]
+    pub file_uri: Option<String>, // TODO: iCloud uses a pre-defined location
     pub value: String,
+}
+
+#[cfg(not(target_os = "ios"))]
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FileArgs {
+    pub file_uri: String,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -38,5 +47,11 @@ pub struct FileAttributes {
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct WriteResponse {
+    pub value: String,
+}
+
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct StringValue {
     pub value: String,
 }

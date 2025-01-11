@@ -16,6 +16,18 @@ export interface FileAttributes {
   modificationDate: string
 }
 
+export interface FileArgs {
+  fileUri: string
+}
+
+/**
+ * `fileUri` is only required for Android
+ */
+export interface WriteArgs {
+  fileUri?: string
+  value: string
+}
+
 export interface Value {
   value: string
 }
@@ -36,29 +48,29 @@ export async function status(): Promise<Status> {
  * Get permission state.
  */
 export async function checkPermissions(): Promise<PermissionState> {
-  return await checkPermissions_<{ cloudStorage: PermissionState }>(
+  return await checkPermissions_<{ value: PermissionState }>(
     'cloud-storage'
-  ).then((r) => r.cloudStorage)
+  ).then((r) => r.value)
 }
 
 /**
  * Write bytes.
  * @param options
  */
-export async function writeBytes(value: string): Promise<Value> {
-  return await invoke('plugin:cloud-storage|write', { value })
+export async function writeBytes(args: WriteArgs): Promise<Value> {
+  return await invoke('plugin:cloud-storage|write', { args })
 }
 
 /**
  * Checks if a backup file exists and returns its "last modified" date and its size.
  */
-export async function exists(): Promise<FileAttributes> {
-  return await invoke('plugin:cloud-storage|exists')
+export async function exists(args: FileArgs): Promise<FileAttributes> {
+  return await invoke('plugin:cloud-storage|exists', { args })
 }
 
 /**
  * Deletes the backup file.
  */
-export async function deleteBackup(): Promise<void> {
-  return await invoke('plugin:cloud-storage|delete')
+export async function deleteBackup(args: FileArgs): Promise<void> {
+  return await invoke('plugin:cloud-storage|delete', { args })
 }

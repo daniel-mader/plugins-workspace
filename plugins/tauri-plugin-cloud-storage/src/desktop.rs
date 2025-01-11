@@ -19,8 +19,6 @@ pub fn init<R: Runtime, C: DeserializeOwned>(
 /// Access to the cloud-storage APIs.
 pub struct CloudStorage<R: Runtime>(AppHandle<R>);
 
-const FILE_PATH: &str = "/Users/daniel/Library/Application Support/com.impierce.unime/backup.txt";
-
 impl<R: Runtime> CloudStorage<R> {
     pub fn ping(&self, payload: PingRequest) -> crate::Result<PingResponse> {
         Ok(PingResponse {
@@ -39,22 +37,24 @@ impl<R: Runtime> CloudStorage<R> {
         // )))
     }
 
-    pub fn check_permissions(&self) -> crate::Result<String> {
+    pub fn check_permissions(&self) -> crate::Result<StringValue> {
         // Ok(PermissionState::Denied)
-        Ok("disabled".to_string())
+        Ok(StringValue {
+            value: "disabled".to_string(),
+        })
     }
 
-    pub fn write(&self, payload: WriteData) -> crate::Result<WriteResponse> {
+    pub fn write(&self, payload: WriteArgs) -> crate::Result<WriteResponse> {
         println!("writing data: {:?}", payload);
-        let mut file = std::fs::File::create(FILE_PATH).unwrap();
+        let mut file = std::fs::File::create(payload.file_uri.unwrap()).unwrap();
         file.write_all(payload.value.as_bytes()).unwrap();
         Ok(WriteResponse {
             value: "done".to_string(),
         })
     }
 
-    pub fn exists(&self) -> crate::Result<FileAttributes> {
-        let metadata = std::fs::metadata(FILE_PATH).unwrap();
+    pub fn exists(&self, args: FileArgs) -> crate::Result<FileAttributes> {
+        let metadata = std::fs::metadata(args.file_uri).unwrap();
 
         let modified: chrono::DateTime<chrono::Utc> = metadata.modified().unwrap().into();
 
@@ -65,8 +65,8 @@ impl<R: Runtime> CloudStorage<R> {
         })
     }
 
-    pub fn delete(&self) -> crate::Result<String> {
-        std::fs::remove_file(FILE_PATH).unwrap();
+    pub fn delete(&self, args: FileArgs) -> crate::Result<String> {
+        std::fs::remove_file(args.file_uri).unwrap();
         Ok("success".to_string())
     }
 

@@ -14,21 +14,24 @@ pub(crate) async fn ping<R: Runtime>(
 }
 
 #[command]
-pub(crate) async fn check_permissions<R: Runtime>(app: AppHandle<R>) -> Result<String> {
+pub(crate) async fn check_permissions<R: Runtime>(app: AppHandle<R>) -> Result<StringValue> {
     app.cloud_storage().check_permissions()
 }
 
 #[command]
-pub(crate) async fn write<R: Runtime>(app: AppHandle<R>, value: String) -> Result<WriteResponse> {
-    app.cloud_storage().write(WriteData { value })
+pub(crate) async fn write<R: Runtime>(app: AppHandle<R>, args: WriteArgs) -> Result<WriteResponse> {
+    app.cloud_storage().write(args)
 }
 
 #[command]
-pub(crate) async fn exists<R: Runtime>(app: AppHandle<R>) -> Result<FileAttributes> {
-    app.cloud_storage().exists()
+pub(crate) async fn exists<R: Runtime>(
+    app: AppHandle<R>,
+    args: FileArgs,
+) -> Result<FileAttributes> {
+    app.cloud_storage().exists(args)
 }
 
 #[command]
-pub(crate) async fn delete<R: Runtime>(app: AppHandle<R>) -> Result<String> {
-    app.cloud_storage().delete()
+pub(crate) async fn delete<R: Runtime>(app: AppHandle<R>, args: FileArgs) -> Result<String> {
+    app.cloud_storage().delete(args)
 }

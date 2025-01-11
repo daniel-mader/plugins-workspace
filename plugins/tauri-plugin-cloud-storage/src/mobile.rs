@@ -38,23 +38,23 @@ impl<R: Runtime> CloudStorage<R> {
         self.0.run_mobile_plugin("status", ()).map_err(Into::into)
     }
 
-    pub fn check_permissions(&self) -> crate::Result<String> {
+    pub fn check_permissions(&self) -> crate::Result<StringValue> {
         self.0
             .run_mobile_plugin("checkPermissions", ())
             .map_err(Into::into)
     }
 
-    pub fn write(&self, payload: WriteData) -> crate::Result<WriteResponse> {
+    pub fn write(&self, payload: WriteArgs) -> crate::Result<WriteResponse> {
         self.0
             .run_mobile_plugin("write", payload)
             .map_err(Into::into)
     }
 
-    pub fn exists(&self) -> crate::Result<FileAttributes> {
+    pub fn exists(&self, args: FileArgs) -> crate::Result<FileAttributes> {
         self.0.run_mobile_plugin("exists", ()).map_err(Into::into)
     }
 
-    pub fn delete(&self) -> crate::Result<String> {
+    pub fn delete(&self, args: FileArgs) -> crate::Result<String> {
         self.0.run_mobile_plugin("delete", ()).map_err(Into::into)
     }
 }

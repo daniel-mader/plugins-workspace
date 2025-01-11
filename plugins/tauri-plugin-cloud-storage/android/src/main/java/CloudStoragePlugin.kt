@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.provider.DocumentsContract
 import androidx.activity.result.ActivityResult
+import androidx.documentfile.provider.DocumentFile
 import app.tauri.Logger
 import app.tauri.annotation.ActivityCallback
 import app.tauri.annotation.Command
@@ -17,6 +18,12 @@ import app.tauri.plugin.Invoke
 @InvokeArg
 class PingArgs {
   var value: String? = null
+}
+
+@InvokeArg
+class WriteArgs {
+    var fileUri: String? = null
+    var value: String? = null
 }
 
 @TauriPlugin
@@ -54,6 +61,11 @@ class CloudStoragePlugin(private val activity: Activity): Plugin(activity) {
         */
 
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
+            /*
+            Key android.provider.extra.INITIAL_URI expected Parcelable but value was a java.lang.String.  The default value <null> was returned.
+            Attempt to cast generated internal exception:
+            java.lang.ClassCastException: java.lang.String cannot be cast to android.os.Parcelable
+            */
             putExtra(DocumentsContract.EXTRA_INITIAL_URI, "Documents/UniMe Backups")
         }
         startActivityForResult(invoke, intent, "openDocumentTreeResult")
@@ -69,10 +81,12 @@ class CloudStoragePlugin(private val activity: Activity): Plugin(activity) {
             return
         }
 
-        Logger.warn(result.data.toString())
+        val folderUri = result.data?.data
+
+        Logger.warn("#####", folderUri.toString())
 
         val res = JSObject()
-        res.put("value", "foo_openDocumentTreeResult")
+        res.put("value", folderUri)
         invoke.resolve(res)
     }
 
@@ -87,6 +101,12 @@ class CloudStoragePlugin(private val activity: Activity): Plugin(activity) {
 
     @Command
     fun write(invoke: Invoke) {
+        val args = invoke.parseArgs(WriteOptions::class.java)
+
+        Logger.warn("##### Writing to ...", folderUri.toString())
+
+        args.fileUri
+
         val ret = JSObject()
         ret.put("value", "android_write")
         invoke.resolve(ret)
