@@ -10,12 +10,6 @@ export interface Status {
   error?: string
 }
 
-export interface FileAttributes {
-  provider: string
-  size: number
-  modificationDate: string
-}
-
 export interface FileArgs {
   fileUri: string
 }
@@ -24,20 +18,18 @@ export interface FileArgs {
  * `fileUri` is only required for Android
  */
 export interface WriteArgs {
-  fileUri?: string
-  value: string
+  pathUri?: string
+  fileName: string
+  data: Uint8Array
+}
+
+export interface ProviderArgs {
+  alias?: string // "iCloud", "Google Drive", "Local filesystem"
+  path?: string
 }
 
 export interface Value {
   value: string
-}
-
-export async function ping(value: string): Promise<string | null> {
-  return await invoke<{ value?: string }>('plugin:cloud-storage|ping', {
-    payload: {
-      value
-    }
-  }).then((r) => (r.value ? r.value : null))
 }
 
 export async function status(): Promise<Status> {
@@ -57,15 +49,8 @@ export async function checkPermissions(): Promise<PermissionState> {
  * Write bytes.
  * @param options
  */
-export async function writeBytes(args: WriteArgs): Promise<Value> {
-  return await invoke('plugin:cloud-storage|write', { args })
-}
-
-/**
- * Checks if a backup file exists and returns its "last modified" date and its size.
- */
-export async function exists(args: FileArgs): Promise<FileAttributes> {
-  return await invoke('plugin:cloud-storage|exists', { args })
+export async function writeData(args: WriteArgs): Promise<void> {
+  return await invoke('plugin:cloud-storage|write_data', { args })
 }
 
 /**
@@ -73,4 +58,8 @@ export async function exists(args: FileArgs): Promise<FileAttributes> {
  */
 export async function deleteBackup(args: FileArgs): Promise<void> {
   return await invoke('plugin:cloud-storage|delete', { args })
+}
+
+export async function getDir(): Promise<ProviderArgs> {
+  return await invoke('plugin:cloud-storage|get_dir')
 }

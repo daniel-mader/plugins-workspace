@@ -325,6 +325,16 @@
           "const": "deny-exists"
         },
         {
+          "description": "Enables the get_dir command without any pre-configured scope.",
+          "type": "string",
+          "const": "allow-get-dir"
+        },
+        {
+          "description": "Denies the get_dir command without any pre-configured scope.",
+          "type": "string",
+          "const": "deny-get-dir"
+        },
+        {
           "description": "Enables the ping command without any pre-configured scope.",
           "type": "string",
           "const": "allow-ping"
@@ -353,6 +363,16 @@
           "description": "Denies the write command without any pre-configured scope.",
           "type": "string",
           "const": "deny-write"
+        },
+        {
+          "description": "Enables the write command without any pre-configured scope.",
+          "type": "string",
+          "const": "allow-write-data"
+        },
+        {
+          "description": "Denies the write command without any pre-configured scope.",
+          "type": "string",
+          "const": "deny-write-data"
         },
         {
           "description": "Default permissions for the plugin",

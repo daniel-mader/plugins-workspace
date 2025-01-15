@@ -2,9 +2,9 @@
 
 Default permissions for the plugin
 
-- `allow-ping`
 - `allow-status`
 - `allow-exists`
+- `allow-get-dir`
 
 ## Permission Table
 
@@ -96,6 +96,32 @@ Denies the exists command without any pre-configured scope.
 <tr>
 <td>
 
+`cloud-storage:allow-get-dir`
+
+</td>
+<td>
+
+Enables the get_dir command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`cloud-storage:deny-get-dir`
+
+</td>
+<td>
+
+Denies the get_dir command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
 `cloud-storage:allow-ping`
 
 </td>
@@ -162,6 +188,32 @@ Enables the write command without any pre-configured scope.
 <td>
 
 `cloud-storage:deny-write`
+
+</td>
+<td>
+
+Denies the write command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`cloud-storage:allow-write-data`
+
+</td>
+<td>
+
+Enables the write command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`cloud-storage:deny-write-data`
 
 </td>
 <td>

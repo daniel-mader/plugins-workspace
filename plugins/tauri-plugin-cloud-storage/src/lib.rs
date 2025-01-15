@@ -43,10 +43,9 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
     Builder::new("cloud-storage")
         .invoke_handler(tauri::generate_handler![
             commands::check_permissions,
-            commands::ping,
-            commands::write,
-            commands::exists,
-            commands::delete
+            // commands::delete,
+            #[cfg(mobile)]
+            commands::get_dir,
         ])
         .setup(|app, api| {
             #[cfg(mobile)]

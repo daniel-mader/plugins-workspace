@@ -1,4 +1,7 @@
+use std::path::PathBuf;
+
 use serde::de::DeserializeOwned;
+use tauri::plugin::PermissionState;
 use tauri::{
     plugin::{PluginApi, PluginHandle},
     AppHandle, Runtime,
@@ -28,33 +31,31 @@ pub fn init<R: Runtime, C: DeserializeOwned>(
 pub struct CloudStorage<R: Runtime>(PluginHandle<R>);
 
 impl<R: Runtime> CloudStorage<R> {
-    pub fn ping(&self, payload: PingRequest) -> crate::Result<PingResponse> {
-        self.0
-            .run_mobile_plugin("ping", payload)
-            .map_err(Into::into)
-    }
+    // pub fn status(&self) -> crate::Result<Status> {
+    //     self.0.run_mobile_plugin("status", ()).map_err(Into::into)
+    // }
 
-    pub fn status(&self) -> crate::Result<Status> {
-        self.0.run_mobile_plugin("status", ()).map_err(Into::into)
-    }
-
-    pub fn check_permissions(&self) -> crate::Result<StringValue> {
+    pub fn check_permissions(&self) -> crate::Result<PermissionStateValue> {
         self.0
             .run_mobile_plugin("checkPermissions", ())
             .map_err(Into::into)
     }
 
-    pub fn write(&self, payload: WriteArgs) -> crate::Result<WriteResponse> {
-        self.0
-            .run_mobile_plugin("write", payload)
-            .map_err(Into::into)
-    }
+    // pub fn write(&self, payload: WriteArgs) -> crate::Result<WriteResponse> {
+    //     self.0
+    //         .run_mobile_plugin("write", payload)
+    //         .map_err(Into::into)
+    // }
 
-    pub fn exists(&self, args: FileArgs) -> crate::Result<FileAttributes> {
-        self.0.run_mobile_plugin("exists", ()).map_err(Into::into)
-    }
+    // pub fn exists(&self, args: FileArgs) -> crate::Result<FileAttributes> {
+    //     self.0.run_mobile_plugin("exists", ()).map_err(Into::into)
+    // }
 
-    pub fn delete(&self, args: FileArgs) -> crate::Result<String> {
-        self.0.run_mobile_plugin("delete", ()).map_err(Into::into)
+    // pub fn delete(&self, args: FileArgs) -> crate::Result<String> {
+    //     self.0.run_mobile_plugin("delete", ()).map_err(Into::into)
+    // }
+
+    pub fn get_dir(&self) -> crate::Result<ProviderArgs> {
+        self.0.run_mobile_plugin("getDir", ()).map_err(Into::into)
     }
 }

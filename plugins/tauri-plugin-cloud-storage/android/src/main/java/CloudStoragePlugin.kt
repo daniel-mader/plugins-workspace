@@ -10,15 +10,12 @@ import app.tauri.annotation.ActivityCallback
 import app.tauri.annotation.Command
 import app.tauri.annotation.InvokeArg
 import app.tauri.annotation.TauriPlugin
+import android.os.ParcelFileDescriptor
 import app.tauri.plugin.JSObject
 import app.tauri.plugin.Plugin
 import app.tauri.plugin.Invoke
+import android.net.Uri
 // import com.google.api.services.drive.DriveScopes;
-
-@InvokeArg
-class PingArgs {
-  var value: String? = null
-}
 
 @InvokeArg
 class WriteArgs {
@@ -60,15 +57,9 @@ class CloudStoragePlugin(private val activity: Activity): Plugin(activity) {
         startActivityForResult(invoke, createFileIntent, REQUEST_CREATE_FILE)
         */
 
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
-            /*
-            Key android.provider.extra.INITIAL_URI expected Parcelable but value was a java.lang.String.  The default value <null> was returned.
-            Attempt to cast generated internal exception:
-            java.lang.ClassCastException: java.lang.String cannot be cast to android.os.Parcelable
-            */
-            putExtra(DocumentsContract.EXTRA_INITIAL_URI, "Documents/UniMe Backups")
-        }
-        startActivityForResult(invoke, intent, "openDocumentTreeResult")
+        val ret = JSObject()
+        ret.put("value", "prompt")
+        invoke.resolve(ret)
     }
 
     @ActivityCallback
@@ -83,34 +74,44 @@ class CloudStoragePlugin(private val activity: Activity): Plugin(activity) {
 
         val folderUri = result.data?.data
 
-        Logger.warn("#####", folderUri.toString())
+        Logger.warn("##########", folderUri.toString())
 
-        val res = JSObject()
-        res.put("value", folderUri)
-        invoke.resolve(res)
-    }
+        val folderDoc = folderUri?.let { uri ->
+            DocumentFile.fromTreeUri(activity, uri)?.uri
+        } ?: run {
+            invoke.reject("treeUri could not be converted to DocumentFile")
+        }
 
-    @Command
-    fun ping(invoke: Invoke) {
-        val args = invoke.parseArgs(PingArgs::class.java)
+        Logger.warn("##########", folderDoc.toString())
+
+        // val fd = activity.contentResolver.openAssetFileDescriptor(
+        //         Uri.parse(folderUri.toString()),
+        //         "MODE_READ_WRITE"
+        //         //ParcelFileDescriptor.MODE_READ_WRITE
+        //     )?.parcelFileDescriptor?.detachFd()
+
+        // Logger.warn("##########", fd)
 
         val ret = JSObject()
-        ret.put("value", "pong from android")
+        ret.put("alias", "Android")
+        ret.put("path", folderDoc.toString())
+        ret.put("path", folderUri.toString())
+        // ret.put("path", fd)
         invoke.resolve(ret)
     }
 
-    @Command
-    fun write(invoke: Invoke) {
-        val args = invoke.parseArgs(WriteOptions::class.java)
+    // @Command
+    // fun write(invoke: Invoke) {
+    //     val args = invoke.parseArgs(WriteOptions::class.java)
 
-        Logger.warn("##### Writing to ...", folderUri.toString())
+    //     Logger.warn("##### Writing to ...", folderUri.toString())
 
-        args.fileUri
+    //     args.fileUri
 
-        val ret = JSObject()
-        ret.put("value", "android_write")
-        invoke.resolve(ret)
-    }
+    //     val ret = JSObject()
+    //     ret.put("value", "android_write")
+    //     invoke.resolve(ret)
+    // }
 
     @Command
     fun exists(invoke: Invoke) {
@@ -119,5 +120,18 @@ class CloudStoragePlugin(private val activity: Activity): Plugin(activity) {
         ret.put("size", 0)
         ret.put("modificationDate", "1970-01-01T00:00:00Z")
         invoke.resolve(ret)
+    }
+
+    @Command
+    fun getDir(invoke: Invoke) {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
+            /*
+            Key android.provider.extra.INITIAL_URI expected Parcelable but value was a java.lang.String.  The default value <null> was returned.
+            Attempt to cast generated internal exception:
+            java.lang.ClassCastException: java.lang.String cannot be cast to android.os.Parcelable
+            */
+            putExtra(DocumentsContract.EXTRA_INITIAL_URI, "Documents/UniMe Backups")
+        }
+        startActivityForResult(invoke, intent, "openDocumentTreeResult")
     }
 }

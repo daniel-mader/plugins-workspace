@@ -7,7 +7,7 @@ use tauri::{
     AppHandle, Manager, Runtime,
 };
 
-use crate::models::*;
+use crate::{models::*, Error};
 
 pub fn init<R: Runtime, C: DeserializeOwned>(
     app: &AppHandle<R>,
@@ -20,55 +20,54 @@ pub fn init<R: Runtime, C: DeserializeOwned>(
 pub struct CloudStorage<R: Runtime>(AppHandle<R>);
 
 impl<R: Runtime> CloudStorage<R> {
-    pub fn ping(&self, payload: PingRequest) -> crate::Result<PingResponse> {
-        Ok(PingResponse {
-            value: payload.value,
+    // pub fn status(&self) -> crate::Result<Status> {
+    //     Ok(Status {
+    //         is_available: false,
+    //         error: None,
+    //     })
+    //     // Err(crate::Error::Io(std::io::Error::new(
+    //     //     std::io::ErrorKind::Unsupported,
+    //     //     "Not implemented",
+    //     // )))
+    // }
+
+    pub fn check_permissions(&self) -> crate::Result<PermissionStateValue> {
+        Ok(PermissionStateValue {
+            value: PermissionState::default(),
         })
     }
 
-    pub fn status(&self) -> crate::Result<Status> {
-        Ok(Status {
-            is_available: false,
-            error: None,
-        })
-        // Err(crate::Error::Io(std::io::Error::new(
-        //     std::io::ErrorKind::Unsupported,
-        //     "Not implemented",
-        // )))
-    }
+    // pub fn get_dir(&self) -> crate::Result<ProviderArgs> {
+    //     Ok(ProviderArgs {
+    //         alias: None,
+    //         path: None,
+    //     })
+    // }
 
-    pub fn check_permissions(&self) -> crate::Result<StringValue> {
-        // Ok(PermissionState::Denied)
-        Ok(StringValue {
-            value: "disabled".to_string(),
-        })
-    }
+    // pub fn write_data(&self, args: WriteArgs) -> crate::Result<()> {
+    //     let file_uri = format!("{}/{}", args.path_uri, args.file_name);
+    //     println!("writing {:?} bytes to `{}`", args.data.len(), file_uri);
+    //     let mut file = std::fs::File::create(file_uri).map_err(Error::Io)?;
+    //     file.write_all(&args.data).map_err(Error::Io)?;
+    //     Ok(())
+    // }
 
-    pub fn write(&self, payload: WriteArgs) -> crate::Result<WriteResponse> {
-        println!("writing data: {:?}", payload);
-        let mut file = std::fs::File::create(payload.file_uri.unwrap()).unwrap();
-        file.write_all(payload.value.as_bytes()).unwrap();
-        Ok(WriteResponse {
-            value: "done".to_string(),
-        })
-    }
+    // pub fn exists(&self, args: FileArgs) -> crate::Result<FileAttributes> {
+    //     let metadata = std::fs::metadata(args.file_uri).unwrap();
 
-    pub fn exists(&self, args: FileArgs) -> crate::Result<FileAttributes> {
-        let metadata = std::fs::metadata(args.file_uri).unwrap();
+    //     let modified: chrono::DateTime<chrono::Utc> = metadata.modified().unwrap().into();
 
-        let modified: chrono::DateTime<chrono::Utc> = metadata.modified().unwrap().into();
+    //     Ok(FileAttributes {
+    //         provider: "Local filesystem".to_string(),
+    //         size: metadata.len(),
+    //         modification_date: modified.to_rfc3339(),
+    //     })
+    // }
 
-        Ok(FileAttributes {
-            provider: "Local filesystem".to_string(),
-            size: metadata.len(),
-            modification_date: modified.to_rfc3339(),
-        })
-    }
-
-    pub fn delete(&self, args: FileArgs) -> crate::Result<String> {
-        std::fs::remove_file(args.file_uri).unwrap();
-        Ok("success".to_string())
-    }
+    // pub fn delete(&self, args: FileArgs) -> crate::Result<String> {
+    //     std::fs::remove_file(args.file_uri).unwrap();
+    //     Ok("success".to_string())
+    // }
 
     // TODO: check iCloud access locally
     // pub fn check_permissions(&self) -> crate::Result<PermissionStatus> {
