@@ -60,6 +60,9 @@ export async function deleteBackup(args: FileArgs): Promise<void> {
   return await invoke('plugin:cloud-storage|delete', { args })
 }
 
+/**
+ * Gets the directory of the backup files.
+ */
 export async function getDir(): Promise<ProviderArgs> {
   return await invoke('plugin:cloud-storage|get_dir')
 }

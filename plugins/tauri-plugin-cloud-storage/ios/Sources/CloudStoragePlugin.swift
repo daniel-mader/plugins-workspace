@@ -37,10 +37,10 @@ class CloudStoragePlugin: Plugin {
     invoke.resolve(["value": permissionState])
   }
 
-  private func iCloudDocumentsDirectory(containerId: String?) -> URL? {
+  private func iCloudDocumentsDirectory() -> URL? {
     let fileManager = FileManager.default
     // Pass nil or your container identifier if you've set one in entitlements
-        guard let ubiquityURL = fileManager.url(forUbiquityContainerIdentifier: containerId) else {
+        guard let ubiquityURL = fileManager.url(forUbiquityContainerIdentifier: nil) else {
         print("iCloud not available or disabled.")
         return nil
     }
@@ -57,7 +57,7 @@ class CloudStoragePlugin: Plugin {
     // invoke.resolve(["value": result])
       
     // 1. Get iCloud Documents directory URL
-      guard let iCloudDocumentsURL = iCloudDocumentsDirectory(containerId: nil) else {
+      guard let iCloudDocumentsURL = iCloudDocumentsDirectory() else {
         throw NSError(domain: "iCloud", code: 0, userInfo: [NSLocalizedDescriptionKey: "iCloud not available"])
     }
 
@@ -82,7 +82,7 @@ class CloudStoragePlugin: Plugin {
 
   // UNUSED
   @objc public func exists(_ invoke: Invoke) throws {
-      guard let iCloudDocumentsURL = iCloudDocumentsDirectory(containerId: nil) else {
+      guard let iCloudDocumentsURL = iCloudDocumentsDirectory() else {
         throw NSError(domain: "iCloud", code: 0, userInfo: [NSLocalizedDescriptionKey: "iCloud not available"])
     }
 
@@ -113,7 +113,7 @@ class CloudStoragePlugin: Plugin {
 
   // UNUSED
   @objc public func delete(_ invoke: Invoke) throws {
-      guard let iCloudDocumentsURL = iCloudDocumentsDirectory(containerId: nil) else {
+      guard let iCloudDocumentsURL = iCloudDocumentsDirectory() else {
         throw NSError(domain: "iCloud", code: 0, userInfo: [NSLocalizedDescriptionKey: "iCloud not available"])
     }
 
@@ -137,7 +137,7 @@ class CloudStoragePlugin: Plugin {
     // let args = try invoke.parseArgs(WriteArgs.self)
       
     // 1. Get iCloud Documents directory URL
-      guard let iCloudDocumentsURL = iCloudDocumentsDirectory(containerId: nil) else {
+      guard let iCloudDocumentsURL = iCloudDocumentsDirectory() else {
         throw NSError(domain: "iCloud", code: 0, userInfo: [NSLocalizedDescriptionKey: "iCloud not available"])
     }
 
