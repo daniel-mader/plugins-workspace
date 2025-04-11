@@ -6,7 +6,7 @@ import android.content.Intent
 import android.content.IntentSender.SendIntentException
 import android.provider.DocumentsContract
 import androidx.activity.result.ActivityResult
-import androidx.core.app.ActivityCompat.startIntentSenderForResult
+import androidx.activity.result.IntentSenderRequest
 import androidx.credentials.CredentialManager
 import androidx.documentfile.provider.DocumentFile
 import app.tauri.Logger
@@ -104,12 +104,18 @@ class CloudStoragePlugin(private val activity: Activity): Plugin(activity) {
                 if (authorizationResult.hasResolution()) {
                     // Access needs to be granted by the user
                     val pendingIntent: PendingIntent = authorizationResult.pendingIntent!!
+                    Logger.info("########## pendingIntent", pendingIntent.toString())
                     try {
-//                        startActivityForResult(invoke, activity.intent, "requestAuthorize")
+                        val request = IntentSenderRequest.Builder(pendingIntent).build()
+                        startIntentSenderForResult(invoke, request, "requestAuthorize")
+                        /*
+                        val sender = ActivityResultContracts.StartIntentSenderForResult()
+                        sender.createIntent(activity, input)
                         startIntentSenderForResult(
                             activity,
                             pendingIntent.intentSender, REQUEST_AUTHORIZE, null, 0, 0, 0, null
                         )
+                        */
                     } catch (e: SendIntentException) {
                         Logger.warn("Couldn't start Authorization UI: " + e.localizedMessage)
                     }
